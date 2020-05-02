@@ -12,6 +12,7 @@ typedef struct {
 void CargarTareas(Tarea** tareas, int cantidad);
 void ListarTareas(Tarea** tareas, Tarea** tareasRealizadas, int cantidad);
 void MostrarTareas(Tarea** tareas, int cantidad);
+Tarea BuscarTarea(Tarea** tareas, Tarea** tareasRealizadas, int cantidad);
 
 int main()
 {
@@ -35,6 +36,12 @@ int main()
 
     printf("\nTarea Pendientes: \n");
     MostrarTareas(tareas, cantidad_tareas);
+
+    Tarea aux;
+    aux = BuscarTarea(tareas, tareasRealizadas, cantidad_tareas);
+    printf("ID: %d\n", aux.TareaID);
+    printf("Nombre: %s\n", aux.Descripcion);
+    printf("Duracion: %d\n\n", aux.Duracion);
     
     getchar();
     system("PAUSE");
@@ -98,4 +105,28 @@ void MostrarTareas(Tarea** tareas, int cantidad)
             printf("Duracion: %d\n\n", tareas[i]->Duracion);
         }
     }
+}
+
+Tarea BuscarTarea(Tarea** tareas, Tarea** tareasRealizadas, int cantidad)
+{
+    int id;
+
+    printf("Ingrese el ID de la tarea a buscar: ");
+    scanf("%d", &id);
+
+    for (int i = 0; i < cantidad; i++)
+    {
+        if(tareas[i] && tareas[i]->TareaID == id)
+        {
+            return *tareas[i];
+        }
+        if(tareasRealizadas[i] &&  tareasRealizadas[i]->TareaID == id)
+        {
+            return *tareasRealizadas[i];
+        }
+    }
+
+    Tarea nula;
+    nula.TareaID = 0;
+    return nula;
 }
