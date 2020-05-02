@@ -13,6 +13,7 @@ void CargarTareas(Tarea** tareas, int cantidad);
 void ListarTareas(Tarea** tareas, Tarea** tareasRealizadas, int cantidad);
 void MostrarTareas(Tarea** tareas, int cantidad);
 Tarea BuscarTarea(Tarea** tareas, Tarea** tareasRealizadas, int cantidad);
+Tarea BuscarPorPalabra(Tarea** tareas, Tarea** tareasRealizadas, int cantidad);
 
 int main()
 {
@@ -46,6 +47,12 @@ int main()
     printf("ID: %d\n", aux.TareaID);
     printf("Descripcion: %s\n", aux.Descripcion);
     printf("Duracion: %d\n\n", aux.Duracion);
+    
+    Tarea aux2;
+    aux2 = BuscarPorPalabra(tareas, tareasRealizadas, cantidad_tareas);
+    printf("ID: %d\n", aux2.TareaID);
+    printf("Nombre: %s\n", aux2.Descripcion);
+    printf("Duracion: %d\n\n", aux2.Duracion);
     
     getchar();
     system("PAUSE");
@@ -113,6 +120,33 @@ void MostrarTareas(Tarea** tareas, int cantidad)
 
 Tarea BuscarTarea(Tarea** tareas, Tarea** tareasRealizadas, int cantidad)
 {
+    int id;
+
+    printf("Ingrese el ID de la tarea a buscar: ");
+    scanf("%d", &id);
+    fflush(stdin);
+
+    for (int i = 0; i < cantidad; i++)
+    {
+        if(tareas[i] && tareas[i]->TareaID == id)
+        {
+            return *tareas[i];
+        }
+        if(tareasRealizadas[i] &&  tareasRealizadas[i]->TareaID == id)
+        {
+            return *tareasRealizadas[i];
+        }
+    }
+
+    Tarea nula;
+    nula.TareaID = 0;
+    nula.Descripcion = "0";
+    nula.Duracion= 0;
+    return nula;
+}
+
+Tarea BuscarPorPalabra(Tarea** tareas, Tarea** tareasRealizadas, int cantidad)
+{
     char palabra[20];
 
     printf("Ingrese la palabra a buscar: ");
@@ -132,5 +166,7 @@ Tarea BuscarTarea(Tarea** tareas, Tarea** tareasRealizadas, int cantidad)
 
     Tarea nula;
     nula.TareaID = 0;
+    nula.Descripcion = "0";
+    nula.Duracion= 0;
     return nula;
 }
