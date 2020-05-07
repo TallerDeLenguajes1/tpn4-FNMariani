@@ -16,7 +16,6 @@ typedef struct nodo{
 
 TNodo* CrearListaVacia();
 void CrearNodo(TNodo** Start, Tarea** T);
-void InsertarNodo(TNodo** tareas, TNodo** que);
 void EliminarNodo(TNodo** tareas, int id);
 
 void CargarTareas(TNodo** tareas, int cantidad);
@@ -41,6 +40,20 @@ int main()
    
     ListarTareas(&TareasPendientes, &TareasRealizadas);
     system("cls");
+
+    //Contamos la cantidad de tareas pendientes marcadas para borrar
+    TNodo* auxi = TareasPendientes;
+    int cont = 0;
+    while(auxi)
+    {
+        if(auxi->T.TareaID == 0) cont++;
+        auxi = auxi->Siguiente;
+    }
+    for (int i = 0; i < cont; i++)
+    {
+        //Borramos las tareas marcadas
+        EliminarNodo(&TareasPendientes, 0);
+    }
 
     printf("/////////////////////////////////////////////////////\n");
     printf("Tareas Realizadas: \n");
@@ -86,19 +99,27 @@ void EliminarNodo(TNodo** tareas, int id)
 {
     TNodo* aux = *tareas;
     TNodo* auxAnterior = *tareas;
-    //while (aux && (aux->T.TareaID != id) )
-    while (aux && (aux->T.TareaID != id) )
+    //Borrado de primer elemento
+    if(tareas && (aux->T.TareaID == id))
     {
-        auxAnterior = aux;
-        aux = aux->Siguiente;
-        printf("a\n");
+        aux = *tareas;
+        *tareas = (*tareas)->Siguiente;
+        free(aux);
     }
-    
-    if(aux)
+    //Borrado de elementos que no son el primero
+    else
     {
-        aux->T.TareaID = 0;
-        auxAnterior->Siguiente = aux->Siguiente;
-        //free(aux);
+        while (aux && (aux->T.TareaID != id) )
+        {
+            auxAnterior = aux;
+            aux = aux->Siguiente;
+        }
+        if(aux)
+        {
+            aux->T.TareaID = 0;
+            auxAnterior->Siguiente = aux->Siguiente;
+            free(aux);
+        }
     }
 }
 
@@ -144,9 +165,11 @@ void ListarTareas(TNodo** tareasPendientes, TNodo** tareasRealizadas)
             Tarea* T;
             T = (Tarea *) malloc(sizeof(Tarea));
             *T = aux->T;
-            
+
             CrearNodo(tareasRealizadas, &T);
-            EliminarNodo(tareasPendientes, aux->T.TareaID);
+
+            //Marcamos el tareaID en 0 para borrarlo despues
+            aux->T.TareaID = 0;
         }
         aux = aux->Siguiente;
     }
@@ -155,7 +178,7 @@ void ListarTareas(TNodo** tareasPendientes, TNodo** tareasRealizadas)
 void MostrarTareas(TNodo** tareas)
 {
     TNodo* aux = *tareas;
-    while(aux && aux->T.TareaID != 0)
+    while(aux)
     {
         printf("ID: %d\n", aux->T.TareaID);
         printf("Descripcion: %s\n", aux->T.Descripcion);
